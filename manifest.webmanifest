@@ -1,0 +1,15 @@
+{
+  "name": "HSK 1 Mandarin Course",
+  "short_name": "HSK 1",
+  "description": "Learn Mandarin from 0 to hero: curriculum, flashcards, immersion, quizzes, writing.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f5f1",
+  "theme_color": "#c8102e",
+  "icons": [
+    {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}
