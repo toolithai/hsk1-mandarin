@@ -2046,5 +2046,54 @@ body.dark .heat span.h1{background:#214a2b}body.dark .heat span.h2{background:#2
  try{ renderChars(); }catch(e){}
 })();
 </script>
+<style>
+#mnav{display:none}#msheet{display:none}
+@media(max-width:640px){
+ nav.tabs{display:none!important}
+ header .bar{padding-top:12px;padding-bottom:12px}
+ #mnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--card);border-top:1px solid var(--line);justify-content:space-around;padding:6px 2px;padding-bottom:calc(6px + env(safe-area-inset-bottom));box-shadow:0 -2px 14px rgba(0,0,0,.08)}
+ #mnav button{flex:1;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--muted);font:inherit;font-size:10.5px;font-weight:700;padding:5px 2px;cursor:pointer;min-height:50px}
+ #mnav button.active{color:var(--accent)}
+ #mnav svg{width:23px;height:23px;display:block}
+ main{padding-bottom:90px!important}
+ #msheet.open{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:70;align-items:flex-end}
+ #msheet .sheet{background:var(--card);width:100%;border-radius:18px 18px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom))}
+ #msheet h3{margin:2px 0 10px;font-size:17px}
+ #msheet a{display:block;padding:15px 8px;border-bottom:1px solid var(--line);font-weight:700;color:var(--ink);font-size:16px;cursor:pointer}
+ #msheet a:last-of-type{border-bottom:0}
+ /* bigger tap targets on phones */
+ .q-opt{padding:16px}.seg-btn{padding:12px 16px}.btn{min-height:46px}
+ h1{font-size:21px}
+}
+body.dark #mnav{background:#1f2329}
+body.dark #msheet .sheet{background:#1f2329}
+</style>
+<script>
+(function(){
+ var ICON={
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>',
+  learn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z" fill="currentColor" stroke="none"/></svg>',
+  practice:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg>',
+  vocab:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1.3" fill="currentColor" stroke="none"/></svg>',
+  more:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="6" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="12" cy="18" r="2"/><circle cx="19" cy="18" r="2"/></svg>'
+ };
+ var PRIMARY=[["home","Home","home"],["learn","Learn","learn"],["practice","Practice","practice"],["vocab","Words","vocab"],["__more","More","more"]];
+ var MORE=[["immersion","Immersion"],["cards","Flashcards"],["quiz","Quiz"],["grammar","Grammar"],["writing","Writing"]];
+ var nav=document.getElementById("mnav"); if(!nav){nav=document.createElement("nav");nav.id="mnav";document.body.appendChild(nav);}
+ nav.innerHTML="";
+ PRIMARY.forEach(function(it){ var b=document.createElement("button"); b.dataset.v=it[0]; b.innerHTML=ICON[it[2]]+'<span>'+it[1]+'</span>'; b.onclick=function(){mnavGo(it[0]);}; nav.appendChild(b); });
+ var sheet=document.getElementById("msheet"); if(!sheet){sheet=document.createElement("div");sheet.id="msheet";document.body.appendChild(sheet);}
+ var rows=MORE.map(function(it){return '<a data-v="'+it[0]+'">'+it[1]+'</a>';}).join("")+'<a data-v="__settings">Settings</a>';
+ sheet.innerHTML='<div class="sheet"><h3>More</h3>'+rows+'<button class="btn ghost" style="width:100%;margin-top:12px" id="msheet-close">Close</button></div>';
+ sheet.addEventListener("click",function(e){ if(e.target===sheet){closeMore();return;} var a=e.target.closest&&e.target.closest("a"); if(a){var v=a.dataset.v; closeMore(); if(v==="__settings"){ if(window.openSettings) openSettings(); } else { go(v); } } });
+ document.getElementById("msheet-close").onclick=function(){closeMore();};
+ window.openMore=function(){sheet.classList.add("open");};
+ window.closeMore=function(){sheet.classList.remove("open");};
+ window.mnavGo=function(v){ if(v==="__more"){openMore();return;} if(v==="learn"&&window.learnStart){learnStart();return;} go(v); };
+ function setMnavActive(v){ var prim=["home","learn","practice","vocab"]; var t=prim.indexOf(v)>=0?v:"__more"; Array.prototype.forEach.call(nav.children,function(b){b.classList.toggle("active",b.dataset.v===t);}); }
+ try{ var _go=window.go; window.go=function(v){ _go(v); try{setMnavActive(v);}catch(e){} try{closeMore();}catch(e){} }; }catch(e){}
+ setMnavActive("home");
+})();
+</script>
 </body>
 </html>
