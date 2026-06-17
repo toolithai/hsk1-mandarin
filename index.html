@@ -585,7 +585,7 @@ function renderHome(){
 /* ---------- unit dropdowns ---------- */
 function fillUnitSelect(sel){
   if(!sel||sel.tagName!=="SELECT")return;
-  for(let u=1;u<=24;u++){const o=document.createElement("option");o.value=u;o.textContent="Unit "+u+" · "+UNITS[u];sel.appendChild(o);}
+  for(let u=1;u<=25;u++){const o=document.createElement("option");o.value=u;o.textContent="Unit "+u+" · "+UNITS[u];sel.appendChild(o);}
 }
 fillUnitSelect(document.getElementById("fc-unit"));
 fillUnitSelect(document.getElementById("qz-unit"));
@@ -607,7 +607,7 @@ function vocabRowHTML(w){
 function renderVocab(){
   const q=(document.getElementById("vsearch").value||"").trim().toLowerCase();
   const host=document.getElementById("vocab-list"); host.innerHTML="";
-  for(let u=1;u<=24;u++){
+  for(let u=1;u<=25;u++){
     let words=VOCAB.filter(w=>w.u===u);
     if(q)words=words.filter(w=>w.h.includes(q)||w.p.toLowerCase().includes(q)||w.e.toLowerCase().includes(q));
     if(!words.length)continue;
@@ -1218,7 +1218,7 @@ console.log("addon ready: scenes",SCENES.length,"image words",Object.keys(IMG).l
      host.appendChild(b);
    };
    mk("all","All sections");
-   for(let u=1;u<=24;u++) mk(u, u+". "+UNITS[u]);
+   for(let u=1;u<=25;u++) mk(u, u+". "+UNITS[u]);
  }
  function buildSectionsMulti(containerId,hiddenId,onChange){
    const host=document.getElementById(containerId),hid=document.getElementById(hiddenId);
@@ -1236,7 +1236,7 @@ console.log("addon ready: scenes",SCENES.length,"image words",Object.keys(IMG).l
      host.appendChild(b);
    };
    mk("all","All sections");
-   for(let u=1;u<=24;u++) mk(u, u+". "+UNITS[u]);
+   for(let u=1;u<=25;u++) mk(u, u+". "+UNITS[u]);
    refresh();
  }
  function pmodeCard(m,icon,color,title,desc){
@@ -2104,5 +2104,94 @@ body.dark #msheet .sheet{background:#1f2329}
   #fc-setup .row .btn,#qz-setup .row .btn{width:100%}
 }
 </style>
+<script>
+(function(){
+ /* ===== A) reconcile class vocab (chapters 1-7) ===== */
+ try{ Object.assign(UNITS,{25:"Shops & travel"}); }catch(e){}
+ var ADD=[
+  {h:"它",p:"tā",e:"it",u:2,x:"它是猫。",xp:"Tā shì māo.",xe:"It is a cat."},
+  {h:"你们",p:"nǐmen",e:"you (plural)",u:2,x:"你们好！",xp:"Nǐmen hǎo!",xe:"Hello, everyone!"},
+  {h:"他们",p:"tāmen",e:"they (men)",u:2,x:"他们是学生。",xp:"Tāmen shì xuésheng.",xe:"They are students."},
+  {h:"她们",p:"tāmen",e:"they (women)",u:2,x:"她们是朋友。",xp:"Tāmen shì péngyou.",xe:"They are friends."},
+  {h:"它们",p:"tāmen",e:"they (things)",u:2,x:"它们很小。",xp:"Tāmen hěn xiǎo.",xe:"They are small."},
+  {h:"香港",p:"Xiānggǎng",e:"Hong Kong",u:15,x:"我住在香港。",xp:"Wǒ zhù zài Xiānggǎng.",xe:"I live in Hong Kong."},
+  {h:"俄罗斯",p:"Éluósī",e:"Russia",u:15,x:"俄罗斯很大。",xp:"Éluósī hěn dà.",xe:"Russia is big."},
+  {h:"越南",p:"Yuènán",e:"Vietnam",u:15,x:"他是越南人。",xp:"Tā shì Yuènán rén.",xe:"He is Vietnamese."},
+  {h:"加拿大",p:"Jiānádà",e:"Canada",u:15,x:"她是加拿大人。",xp:"Tā shì Jiānádà rén.",xe:"She is Canadian."},
+  {h:"印度",p:"Yìndù",e:"India",u:15,x:"印度很大。",xp:"Yìndù hěn dà.",xe:"India is big."},
+  {h:"两",p:"liǎng",e:"two (of something)",u:3,x:"两个人",xp:"liǎng ge rén",xe:"two people"},
+  {h:"口",p:"kǒu",e:"measure word for family",u:3,x:"我家有四口人。",xp:"Wǒ jiā yǒu sì kǒu rén.",xe:"My family has four people."},
+  {h:"只",p:"zhǐ",e:"only",u:3,x:"我只喝茶。",xp:"Wǒ zhǐ hē chá.",xe:"I only drink tea."},
+  {h:"杯",p:"bēi",e:"cup (measure word)",u:3,x:"一杯水",xp:"yì bēi shuǐ",xe:"a glass of water"},
+  {h:"瓶",p:"píng",e:"bottle (measure word)",u:3,x:"一瓶水",xp:"yì píng shuǐ",xe:"a bottle of water"},
+  {h:"伤心",p:"shāngxīn",e:"sad",u:13,x:"我很伤心。",xp:"Wǒ hěn shāngxīn.",xe:"I am sad."},
+  {h:"矮",p:"ǎi",e:"short (height)",u:13,x:"他很矮。",xp:"Tā hěn ǎi.",xe:"He is short."},
+  {h:"是的",p:"shìde",e:"yes",u:23,x:"是的，我是老师。",xp:"Shìde, wǒ shì lǎoshī.",xe:"Yes, I am a teacher."},
+  {h:"请问",p:"qǐngwèn",e:"may I ask",u:23,x:"请问，你是谁？",xp:"Qǐngwèn, nǐ shì shéi?",xe:"Excuse me, who are you?"},
+  {h:"可能",p:"kěnéng",e:"maybe",u:23,x:"他可能是老师。",xp:"Tā kěnéng shì lǎoshī.",xe:"He might be a teacher."},
+  {h:"当然",p:"dāngrán",e:"of course",u:23,x:"当然可以！",xp:"Dāngrán kěyǐ!",xe:"Of course!"},
+  {h:"不过",p:"búguò",e:"however, but",u:23,x:"我会说，不过不会写。",xp:"Wǒ huì shuō, búguò bú huì xiě.",xe:"I can speak, but not write."},
+  {h:"跟",p:"gēn",e:"with",u:23,x:"我跟朋友一起去。",xp:"Wǒ gēn péngyou yìqǐ qù.",xe:"I go with friends."},
+  {h:"汉字",p:"hànzì",e:"Chinese character",u:17,x:"我写汉字。",xp:"Wǒ xiě hànzì.",xe:"I write Chinese characters."},
+  {h:"中文",p:"Zhōngwén",e:"Chinese (written)",u:17,x:"我学中文。",xp:"Wǒ xué Zhōngwén.",xe:"I study Chinese."},
+  {h:"字典",p:"zìdiǎn",e:"dictionary",u:17,x:"这是汉语字典。",xp:"Zhè shì Hànyǔ zìdiǎn.",xe:"This is a Chinese dictionary."},
+  {h:"教",p:"jiāo",e:"to teach",u:17,x:"老师教我们汉语。",xp:"Lǎoshī jiāo wǒmen Hànyǔ.",xe:"The teacher teaches us Chinese."},
+  {h:"去年",p:"qùnián",e:"last year",u:6,x:"去年我去中国。",xp:"Qùnián wǒ qù Zhōngguó.",xe:"Last year I went to China."},
+  {h:"今年",p:"jīnnián",e:"this year",u:6,x:"今年我学汉语。",xp:"Jīnnián wǒ xué Hànyǔ.",xe:"This year I study Chinese."},
+  {h:"明年",p:"míngnián",e:"next year",u:6,x:"明年我去北京。",xp:"Míngnián wǒ qù Běijīng.",xe:"Next year I go to Beijing."},
+  {h:"可乐",p:"kělè",e:"cola",u:19,x:"我想喝可乐。",xp:"Wǒ xiǎng hē kělè.",xe:"I want to drink cola."},
+  {h:"鱼",p:"yú",e:"fish",u:7,x:"我喜欢吃鱼。",xp:"Wǒ xǐhuan chī yú.",xe:"I like to eat fish."},
+  {h:"吃饭",p:"chīfàn",e:"to eat (a meal)",u:7,x:"我们一起吃饭。",xp:"Wǒmen yìqǐ chīfàn.",xe:"We eat together."},
+  {h:"卖",p:"mài",e:"to sell",u:25,x:"商店卖水果。",xp:"Shāngdiàn mài shuǐguǒ.",xe:"The shop sells fruit."},
+  {h:"书店",p:"shūdiàn",e:"bookstore",u:25,x:"我去书店买书。",xp:"Wǒ qù shūdiàn mǎi shū.",xe:"I go to the bookstore to buy books."},
+  {h:"超市",p:"chāoshì",e:"supermarket",u:25,x:"我去超市买东西。",xp:"Wǒ qù chāoshì mǎi dōngxi.",xe:"I go to the supermarket."},
+  {h:"市场",p:"shìchǎng",e:"market",u:25,x:"市场有很多鱼。",xp:"Shìchǎng yǒu hěn duō yú.",xe:"The market has a lot of fish."},
+  {h:"旅游",p:"lǚyóu",e:"to travel",u:25,x:"我喜欢旅游。",xp:"Wǒ xǐhuan lǚyóu.",xe:"I like to travel."},
+  {h:"食物",p:"shíwù",e:"food",u:25,x:"这里有很多食物。",xp:"Zhèlǐ yǒu hěn duō shíwù.",xe:"There is a lot of food here."}
+ ];
+ try{ ADD.forEach(function(w){ if(!VOCAB.find(function(x){return x.h===w.h;})) VOCAB.push(w); }); VOCAB.forEach(function(w,i){w.id=i;}); }catch(e){}
+
+ /* ===== C) wire image slots for chapter words (files generated next) ===== */
+ try{ Object.assign(IMG,{"咖啡":"kafei","牛奶":"niunai","蛋糕":"shengri","生日":"shengri","手机":"shouji","公交车":"gongjiao","地铁":"ditie","律师":"lawyer","公司":"gongsi","走路":"walk","开车":"drive"}); }catch(e){}
+
+ /* refresh unit-driven views */
+ try{ renderVocab(); }catch(e){}
+ try{ buildSectionsMulti("fc-sec","fc-unit",(typeof updateAvail==="function")?updateAvail:null); }catch(e){}
+ try{ buildSections("qz-sec","qz-unit"); }catch(e){}
+ try{ buildImmersion(); }catch(e){}
+ try{ if(typeof renderChars==="function") renderChars(); }catch(e){}
+ try{ if(typeof renderCurriculum==="function") renderCurriculum(); }catch(e){}
+ try{ if(typeof renderHome==="function") renderHome(); }catch(e){}
+
+ /* ===== B) better audio: voice from settings, voice picker ===== */
+ function vget(){try{return localStorage.getItem("hsk1_voice")||""}catch(e){return""}}
+ function vset(x){try{localStorage.setItem("hsk1_voice",x)}catch(e){}}
+ function zhVoices(){ var v=(window.speechSynthesis?speechSynthesis.getVoices():[])||[]; return v.filter(function(x){return (x.lang||"").toLowerCase().indexOf("zh")>=0||/chinese|中文|普通话|mandarin/i.test(x.name);}); }
+ window.speak=function(t){
+   if(!window.speechSynthesis) return;
+   var u=new SpeechSynthesisUtterance(t); u.lang="zh-CN"; u.rate=(window.SPEAK_RATE||0.85);
+   var voices=speechSynthesis.getVoices()||[]; var pick=null, want=vget();
+   if(want) pick=voices.find(function(x){return x.voiceURI===want;});
+   if(!pick) pick=voices.find(function(x){return (x.lang||"").toLowerCase().replace("_","-")==="zh-cn";})||voices.find(function(x){return (x.lang||"").toLowerCase().indexOf("zh")>=0;});
+   if(pick) u.voice=pick;
+   speechSynthesis.cancel(); speechSynthesis.speak(u);
+ };
+ function injectVoiceUI(){
+   var m=document.getElementById("setModal"); if(!m||m.querySelector("#set-voice-row")) return;
+   var vs=zhVoices(); var row=document.createElement("div"); row.className="set-row"; row.id="set-voice-row";
+   if(!vs.length){ row.innerHTML='<span>Voice</span><span class="muted" style="font-size:12px">No Chinese voice on this device</span>'; }
+   else{
+     var cur=vget(); var opts=vs.map(function(v){return '<option value="'+v.voiceURI+'"'+(cur===v.voiceURI?' selected':'')+'>'+(v.name.length>22?v.name.slice(0,22):v.name)+'</option>';}).join("");
+     row.innerHTML='<span>Voice</span><span style="display:flex;gap:6px;align-items:center"><select id="set-voice" style="max-width:150px">'+opts+'</select><button class="btn ghost sm" id="set-voice-test">&#9654;</button></span>';
+   }
+   var rows=Array.prototype.slice.call(m.querySelectorAll(".set-row"));
+   var speedRow=rows.filter(function(r){return /Audio speed/.test(r.textContent);})[0];
+   if(speedRow) speedRow.insertAdjacentElement("afterend",row); else { var box=m.querySelector(".box"); if(box) box.appendChild(row); }
+   var sel=document.getElementById("set-voice"); if(sel) sel.onchange=function(){ vset(sel.value); };
+   var test=document.getElementById("set-voice-test"); if(test) test.onclick=function(){ speak("你好，我们一起学习。"); };
+ }
+ try{ var prevOpen=window.openSettings; window.openSettings=function(){ if(prevOpen)prevOpen(); injectVoiceUI(); }; var g=document.getElementById("gear"); if(g) g.onclick=window.openSettings; }catch(e){}
+})();
+</script>
 </body>
 </html>
