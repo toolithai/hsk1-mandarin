@@ -2014,5 +2014,37 @@ body.dark .heat span.h1{background:#214a2b}body.dark .heat span.h2{background:#2
  setInterval(flush, 30000);
 })();
 </script>
+<style>
+.charchip2{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;aspect-ratio:1;background:#fff;border:1px solid var(--line);border-radius:12px;cursor:pointer;font:inherit;transition:.12s;padding:4px}
+.charchip2:hover{border-color:var(--accent);transform:translateY(-2px)}
+.cc-han{font-size:25px;font-weight:600;line-height:1}
+.cc-py{font-size:11px;font-weight:700;line-height:1}
+</style>
+<script>
+(function(){
+ var CHARPY={"东":"dōng","中":"zhōng","为":"wèi","么":"me","习":"xí","交":"jiāo","京":"jīng","亮":"liàng","什":"shén","今":"jīn","以":"yǐ","们":"men","但":"dàn","作":"zuò","候":"hòu","儿":"ér","先":"xiān","公":"gōng","关":"guān","兴":"xìng","再":"zài","出":"chū","分":"fēn","刮":"guā","前":"qián","北":"běi","医":"yī","午":"wǔ","友":"yǒu","可":"kě","司":"sī","同":"tóng","名":"míng","后":"hòu","周":"zhōu","咖":"kā","哥":"gē","商":"shāng","啡":"fēi","喜":"xǐ","因":"yīn","国":"guó","地":"dì","天":"tiān","女":"nǚ","奶":"nǎi","妈":"mā","妹":"mèi","姐":"jiě","子":"zi","学":"xué","客":"kè","工":"gōng","师":"shī","常":"cháng","店":"diàn","弟":"dì","影":"yǐng","律":"lǜ","得":"de","德":"dé","怎":"zěn","手":"shǒu","打":"dǎ","日":"rì","早":"zǎo","时":"shí","明":"míng","星":"xīng","昨":"zuó","晚":"wǎn","晴":"qíng","朋":"péng","服":"fú","期":"qī","末":"mò","机":"jī","杯":"bēi","果":"guǒ","校":"xiào","样":"yàng","桌":"zhuō","椅":"yǐ","欢":"huān","气":"qì","汉":"hàn","法":"fǎ","漂":"piào","爸":"bà","牛":"niú","现":"xiàn","生":"shēng","电":"diàn","睡":"shuì","知":"zhī","码":"mǎ","租":"zū","米":"mǐ","糕":"gāo","系":"xì","美":"měi","老":"lǎo","脑":"nǎo","英":"yīng","苹":"píng","蛋":"dàn","衣":"yī","西":"xī","见":"jiàn","视":"shì","觉":"jiào","认":"rèn","识":"shí","话":"huà","语":"yǔ","课":"kè","谢":"xiè","走":"zǒu","起":"qǐ","路":"lù","车":"chē","道":"dào","里":"lǐ","钟":"zhōng","铁":"tiě","阴":"yīn","院":"yuàn","雨":"yǔ","雪":"xuě","非":"fēi","面":"miàn","韩":"hán","风":"fēng","飞":"fēi","饭":"fàn","高":"gāo"};
+ var charPY={};
+ try{ VOCAB.forEach(function(w){ var hz=(w.h.match(/[一-鿿]/g)||[]); if(hz.length===1) charPY[hz[0]]=w.p; }); }catch(e){}
+ Object.keys(CHARPY).forEach(function(k){ if(!charPY[k]) charPY[k]=CHARPY[k]; });
+ window.getCharPinyin=function(ch){ return charPY[ch]||""; };
+ window.renderChars=function(){
+   var host=document.getElementById("char-grid"); if(!host) return;
+   var seen={},CH=[];
+   VOCAB.forEach(function(w){ for(var i=0;i<w.h.length;i++){ var ch=w.h[i]; if(ch>="一"&&ch<="鿿"&&!seen[ch]){seen[ch]=1;CH.push(ch);} } });
+   var note=document.getElementById("hw-note");
+   if(typeof HanziWriter==="undefined"){ if(note) note.textContent="Stroke-order needs an internet connection. Reconnect and reload to use this section."; }
+   else if(note){ note.textContent="Tap a character ("+CH.length+" total). Watch the strokes, then tap Practice to write it. Pinyin is under each."; }
+   host.innerHTML="";
+   CH.forEach(function(ch){
+     var d=document.createElement("button"); d.className="charchip2";
+     d.innerHTML='<span class="cc-han han">'+ch+'</span><span class="py cc-py">'+(getCharPinyin(ch)||"")+'</span>';
+     d.onclick=function(){ openChar(ch); };
+     host.appendChild(d);
+   });
+ };
+ try{ var _oc=window.openChar; window.openChar=function(ch){ _oc(ch); var info=document.getElementById("cm-info"); if(info){ var py=getCharPinyin(ch); var w=VOCAB.find(function(x){return x.h===ch;}); info.textContent=ch+(py?"  "+py:"")+(w?"  ·  "+w.e:""); } }; }catch(e){}
+ try{ renderChars(); }catch(e){}
+})();
+</script>
 </body>
 </html>
