@@ -2326,5 +2326,19 @@ window.GRAMMARNEW=[{"t": "Basic word order: Subject + Verb + Object", "d": "A si
  homeRender();
 })();
 </script>
+<script>
+(function(){
+ var NW=[{"h": "果汁", "p": "guǒzhī", "e": "juice", "u": 7, "x": "我要一杯果汁。", "xp": "Wǒ yào yì bēi guǒzhī.", "xe": "I want a glass of juice.", "ex2": [{"zh": "我喝果汁", "py": "wǒ hē guǒ zhī", "en": "I drink juice."}, {"zh": "果汁好喝", "py": "guǒ zhī hǎo hē", "en": "Juice tastes good."}], "mn": "果 (fruit) + 汁 (liquid, note the water radical 氵) = fruit juice."}, {"h": "分", "p": "fēn", "e": "minute", "u": 6, "x": "现在两点十分。", "xp": "Xiànzài liǎng diǎn shí fēn.", "xe": "It's ten past two now.", "ex2": [{"zh": "等一分钟", "py": "děng yì fēn zhōng", "en": "Wait one minute."}, {"zh": "三分钟吗", "py": "sān fēn zhōng ma", "en": "Three minutes?"}], "mn": "八 (split) over 刀 (knife): a knife dividing the hour into 'minutes'."}, {"h": "没有", "p": "méiyǒu", "e": "to not have", "u": 8, "x": "我没有时间。", "xp": "Wǒ méiyǒu shíjiān.", "xe": "I don't have time.", "ex2": [{"zh": "我没有钱", "py": "wǒ méi yǒu qián", "en": "I don’t have money."}, {"zh": "他没有书", "py": "tā méi yǒu shū", "en": "He doesn’t have a book."}], "mn": "没 (not, water radical) + 有 (have) = 'not have'."}, {"h": "只有", "p": "zhǐyǒu", "e": "to only have", "u": 8, "x": "我只有一个朋友。", "xp": "Wǒ zhǐyǒu yí ge péngyou.", "xe": "I only have one friend.", "ex2": [{"zh": "我只有水", "py": "wǒ zhǐ yǒu shuǐ", "en": "I only have water."}, {"zh": "只有一个", "py": "zhǐ yǒu yí ge", "en": "There is only one."}], "mn": "只 (only) + 有 (have) = 'only have'."}, {"h": "还有", "p": "háiyǒu", "e": "also / still have", "u": 8, "x": "我还有一个妹妹。", "xp": "Wǒ hái yǒu yí ge mèimei.", "xe": "I also have a younger sister.", "ex2": [{"zh": "我还有书", "py": "wǒ hái yǒu shū", "en": "I also have a book."}, {"zh": "还有水吗", "py": "hái yǒu shuǐ ma", "en": "Is there still water?"}], "mn": "还 (still / also) + 有 (have) = 'also have'."}, {"h": "一下", "p": "yíxià", "e": "briefly / a bit", "u": 14, "x": "请看一下。", "xp": "Qǐng kàn yíxià.", "xe": "Please take a look.", "ex2": [{"zh": "看一下", "py": "kàn yí xià", "en": "Look for a bit."}, {"zh": "请坐一下", "py": "qǐng zuò yí xià", "en": "Please sit for a bit."}], "mn": "一 (one) + 下 (down): do something 'one time', briefly."}];
+ try{
+  NW.forEach(function(w){
+   if(typeof VOCAB!=='undefined' && !VOCAB.some(function(v){return v.h===w.h;})){ VOCAB.push({h:w.h,p:w.p,e:w.e,u:w.u,x:w.x,xp:w.xp,xe:w.xe,ex2:w.ex2,mn:w.mn}); }
+   if(typeof EXAMPLES!=='undefined'){ EXAMPLES[w.h]={ex:w.ex2,mn:w.mn}; }
+  });
+  if(typeof renderVocab==='function') renderVocab();
+  if(typeof renderChars==='function') renderChars();
+  if(typeof homeRender==='function') homeRender();
+ }catch(e){console.log('newwords',e);}
+})();
+</script>
 </body>
 </html>
