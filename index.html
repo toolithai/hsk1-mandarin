@@ -2340,5 +2340,50 @@ window.GRAMMARNEW=[{"t": "Basic word order: Subject + Verb + Object", "d": "A si
  }catch(e){console.log('newwords',e);}
 })();
 </script>
+<script>
+/* ===== Simplify: guided nav (Home · Learn · Review · Write · More) ===== */
+(function(){
+ var IC={
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>',
+  learn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z" fill="currentColor" stroke="none"/></svg>',
+  review:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>',
+  write:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+  more:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="6" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="12" cy="18" r="2"/><circle cx="19" cy="18" r="2"/></svg>'
+ };
+ // one-tap review (smart, all sections, no picker)
+ window.reviewStart=function(){ try{ go('cards'); var m=document.getElementById('fc-mode'); if(m)m.value='smart'; var u=document.getElementById('fc-unit'); if(u)u.value='all'; if(typeof startSession==='function') startSession(); }catch(e){ go('cards'); } };
+ // clean the flashcard setup: hide mode + section pickers (review is one-tap; this is the only fallback screen)
+ try{ ['fc-mode-seg','fc-sec'].forEach(function(id){ var el=document.getElementById(id); if(el){ el.style.display='none'; var lb=el.previousElementSibling; if(lb&&lb.classList&&lb.classList.contains('lbl')) lb.style.display='none'; } });
+   var sb=document.querySelector('#fc-setup .btn.primary'); if(sb) sb.innerHTML='&#9654; Start review'; }catch(e){}
+ // active-state helper for both navs
+ function setActive(v){
+   var map={home:'home',learn:'learn',cards:'review',writing:'write'};
+   var t=map[v]||'__more';
+   var tabs=document.getElementById('tabs'); if(tabs) Array.prototype.forEach.call(tabs.children,function(b){ b.classList.toggle('active', b.dataset.v===t); });
+   var nav=document.getElementById('mnav'); if(nav) Array.prototype.forEach.call(nav.children,function(b){ b.classList.toggle('active', b.dataset.v===t); });
+ }
+ window.__setActive=setActive;
+ var NAV=[['home','Home','home',function(){go('home');}],['learn','Learn','learn',function(){ if(window.learnStart)learnStart(); else go('learn'); }],['review','Review','review',function(){ reviewStart(); }],['write','Write','write',function(){ go('writing'); }],['__more','More','more',function(){ if(window.openMore)openMore(); }]];
+ // desktop tabs
+ var tabs=document.getElementById('tabs');
+ if(tabs){ tabs.innerHTML=''; NAV.forEach(function(it){ var b=document.createElement('button'); b.dataset.v=it[0]; b.textContent=it[1]; b.onclick=it[3]; tabs.appendChild(b); }); }
+ // mobile bottom nav
+ var nav=document.getElementById('mnav');
+ if(nav){ nav.innerHTML=''; NAV.forEach(function(it){ var b=document.createElement('button'); b.dataset.v=it[0]; b.innerHTML=IC[it[2]]+'<span>'+it[1]+'</span>'; b.onclick=it[3]; nav.appendChild(b); }); }
+ // More sheet contents
+ var sheet=document.getElementById('msheet');
+ if(sheet){ var inner=sheet.querySelector('.sheet')||sheet;
+   var rows=[['vocab','All words'],['practice','Practice games'],['grammar','Grammar'],['quiz','Quiz'],['immersion','Immersion'],['__settings','Settings']];
+   inner.innerHTML='<h3>More</h3>'+rows.map(function(r){return '<a data-v="'+r[0]+'">'+r[1]+'</a>';}).join('')+'<button class="btn ghost" style="width:100%;margin-top:12px" id="msheet-close">Close</button>';
+   var cl=document.getElementById('msheet-close'); if(cl) cl.onclick=function(){ if(window.closeMore)closeMore(); };
+ }
+ // re-wrap go to drive active state + close sheet
+ try{ var _go=window.go; window.go=function(v){ _go(v); try{setActive(v);}catch(e){} try{ if(window.closeMore)closeMore(); }catch(e){} }; }catch(e){}
+ // Home quick actions -> Review / Writing / Words
+ try{ var _hr=window.homeRender; if(_hr){ window.homeRender=function(){ _hr.apply(this,arguments); try{ var qa=document.querySelector('#home .qa'); if(qa) qa.innerHTML='<button onclick="reviewStart()">Review due</button><button onclick="go(\'writing\')">Writing</button><button onclick="go(\'vocab\')">All words</button>'; }catch(e){} }; window.renderHome=window.homeRender; window.renderStats=window.homeRender; } }catch(e){}
+ try{ if(window.homeRender) homeRender(); }catch(e){}
+ setActive('home');
+})();
+</script>
 </body>
 </html>
