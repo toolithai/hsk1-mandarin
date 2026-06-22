@@ -2385,5 +2385,57 @@ window.GRAMMARNEW=[{"t": "Basic word order: Subject + Verb + Object", "d": "A si
  setActive('home');
 })();
 </script>
+<style>
+.dia-line{padding:10px 13px;border-radius:13px;background:var(--soft);margin-bottom:8px}
+.dia-line .han{font-size:17px}
+.dia-line .who{font-weight:800;color:var(--accent);margin-right:7px}
+.scene-words{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.scene-words .sw{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 13px;font:inherit;font-size:15px;cursor:pointer}
+.scene-words .sw:hover{border-color:var(--accent)}
+</style>
+<script>
+/* ===== Integrate immersion scenes INTO the lesson flow ===== */
+(function(){
+ if(typeof SCENES==="undefined"||typeof CURRICULUM==="undefined") return;
+ var byKey={}; SCENES.forEach(function(s){byKey[s.key]=s;});
+ var MAP={0:["s_greet"],3:["s_family","s_family2"],5:["s_countries"],6:["s_food","s_drinks"],
+   7:["s_birthday","s_time2"],8:["s_weekend"],10:["s_city"],11:["s_languages","s_school"],
+   13:["s_home2"],14:["s_job"],15:["s_transport"],16:["s_phone"],17:["s_weather","s_time"]};
+ var LESSON_SCENES={}; Object.keys(MAP).forEach(function(k){ LESSON_SCENES[k]=MAP[k].map(function(key){return byKey[key];}).filter(Boolean); });
+ window.LESSON_SCENES=LESSON_SCENES;
+ function renderLessonScene(){
+   var arr=LESSON_SCENES[LRN.lesson]||[]; var i=LRN._sceneI||0; var sc=arr[i];
+   if(!sc){ LRN._scenesShown=true; return lqStart(LRN.lesson); }
+   var total=arr.length;
+   var dia=sc.dia.map(function(d){return '<div class="dia-line"><span class="who">'+d.s+'</span><span class="han">'+d.zh+'</span> <button class="spk" onclick="speak(\''+d.zh+'\')">&#128266;</button><div class="epy">'+d.py+'</div><div class="muted">'+d.en+'</div></div>';}).join('');
+   var words=(sc.words||[]).map(function(h){return '<button class="sw" onclick="speak(\''+h+'\')"><span class="han">'+h+'</span></button>';}).join('');
+   learnEl().innerHTML='<div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px">'
+     +'<button class="btn ghost sm" onclick="renderCurriculum()">&#8592; Path</button>'
+     +'<span class="muted" style="font-weight:700">Lesson '+(LRN.lesson+1)+' &middot; '+CURRICULUM[LRN.lesson].t+'</span></div>'
+     +'<div class="lesson-scene" style="max-width:560px;margin:0 auto">'
+     +'<div class="pill teal" style="margin-bottom:8px">See it in action'+(total>1?(' &middot; '+(i+1)+'/'+total):'')+'</div>'
+     +'<h2 style="margin:.2em 0 .1em">'+sc.zh+' <span class="muted" style="font-size:15px;font-weight:600">'+sc.en+'</span></h2>'
+     +'<div class="card pad" style="margin:10px 0 12px"><div class="han" style="font-size:20px">'+sc.intro.zh+' <button class="spk" onclick="speak(\''+sc.intro.zh+'\')">&#128266;</button></div><div class="epy">'+sc.intro.py+'</div><div class="muted">'+sc.intro.en+'</div></div>'
+     +dia
+     +(words?('<div class="lbl" style="margin-top:12px">Words you just learned</div><div class="scene-words">'+words+'</div>'):'')
+     +'<button class="btn primary" style="width:100%;margin-top:16px;font-size:16px;padding:13px" onclick="sceneContinue()">Continue &#8594;</button>'
+     +'</div>';
+   try{window.scrollTo({top:0,behavior:"smooth"});}catch(e){}
+ }
+ window.renderLessonScene=renderLessonScene;
+ window.sceneContinue=function(){ var arr=LESSON_SCENES[LRN.lesson]||[]; LRN._sceneI=(LRN._sceneI||0)+1; if(LRN._sceneI<arr.length){ renderLessonScene(); } else { LRN._scenesShown=true; lqStart(LRN.lesson); } };
+ // After teaching the words, show the scene(s) before the quick check
+ try{ var _lc=window.learnCard; window.learnCard=function(){
+   if(typeof LRN!=="undefined" && LRN && LRN.i>=LRN.q.length && !LRN._scenesShown){
+     var arr=LESSON_SCENES[LRN.lesson]||[]; if(arr.length){ if(LRN._sceneI==null)LRN._sceneI=0; return renderLessonScene(); }
+   }
+   return _lc.apply(this,arguments);
+ }; }catch(e){}
+ // Tag lessons that include a scene, in the path list
+ try{ var _rc=window.renderCurriculum; window.renderCurriculum=function(){ _rc.apply(this,arguments); try{ document.querySelectorAll("#learn .lesson").forEach(function(b,idx){ if(LESSON_SCENES[idx]&&LESSON_SCENES[idx].length){ var sm=b.querySelector(".linfo small"); if(sm&&sm.textContent.indexOf("dialogue")<0) sm.textContent+=" + dialogue"; } }); }catch(e){} }; }catch(e){}
+ // Remove the standalone Immersion entry from More (it now lives in lessons)
+ try{ var sheet=document.getElementById("msheet"); if(sheet){ var a=sheet.querySelector('a[data-v="immersion"]'); if(a)a.remove(); } }catch(e){}
+})();
+</script>
 </body>
 </html>
