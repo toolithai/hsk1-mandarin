@@ -1660,7 +1660,7 @@ function lqStart(idx){
 }
 function lqQuestion(){
   const q=LQ.items[LQ.i], sec=learnEl();
-  const pic=(IMG[q.t.h]||EMOJI[q.t.h])?picHTML(q.t.h,110):"";
+  const pic="";
   sec.innerHTML=`
    <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px">
      <button class="btn ghost sm" onclick="renderCurriculum()">&#8592; Path</button>
@@ -2392,6 +2392,11 @@ window.GRAMMARNEW=[{"t": "Basic word order: Subject + Verb + Object", "d": "A si
 .scene-words{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .scene-words .sw{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 13px;font:inherit;font-size:15px;cursor:pointer}
 .scene-words .sw:hover{border-color:var(--accent)}
+.scene-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;margin-top:8px}
+.scard{display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 6px;font:inherit;cursor:pointer;transition:.12s}
+.scard:hover{border-color:var(--accent);transform:translateY(-2px)}
+.scard .han{font-size:18px;font-weight:700}
+.scard small{color:var(--muted);font-size:11px;text-align:center;line-height:1.15}
 </style>
 <script>
 /* ===== Integrate immersion scenes INTO the lesson flow ===== */
@@ -2408,7 +2413,7 @@ window.GRAMMARNEW=[{"t": "Basic word order: Subject + Verb + Object", "d": "A si
    if(!sc){ LRN._scenesShown=true; return lqStart(LRN.lesson); }
    var total=arr.length;
    var dia=sc.dia.map(function(d){return '<div class="dia-line"><span class="who">'+d.s+'</span><span class="han">'+d.zh+'</span> <button class="spk" onclick="speak(\''+d.zh+'\')">&#128266;</button><div class="epy">'+d.py+'</div><div class="muted">'+d.en+'</div></div>';}).join('');
-   var words=(sc.words||[]).map(function(h){return '<button class="sw" onclick="speak(\''+h+'\')"><span class="han">'+h+'</span></button>';}).join('');
+   var words=(sc.words||[]).map(function(h){ var v=(typeof VOCAB!=="undefined")?VOCAB.find(function(x){return x.h===h;}):null; var pic=(IMG[h]||EMOJI[h])?picHTML(h,92):""; return '<button class="scard" onclick="speak(\''+h+'\')">'+(pic||'')+'<span class="han">'+h+'</span>'+(v?'<small>'+v.e+'</small>':'')+'</button>'; }).join('');
    learnEl().innerHTML='<div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px">'
      +'<button class="btn ghost sm" onclick="renderCurriculum()">&#8592; Path</button>'
      +'<span class="muted" style="font-weight:700">Lesson '+(LRN.lesson+1)+' &middot; '+CURRICULUM[LRN.lesson].t+'</span></div>'
@@ -2417,7 +2422,7 @@ window.GRAMMARNEW=[{"t": "Basic word order: Subject + Verb + Object", "d": "A si
      +'<h2 style="margin:.2em 0 .1em">'+sc.zh+' <span class="muted" style="font-size:15px;font-weight:600">'+sc.en+'</span></h2>'
      +'<div class="card pad" style="margin:10px 0 12px"><div class="han" style="font-size:20px">'+sc.intro.zh+' <button class="spk" onclick="speak(\''+sc.intro.zh+'\')">&#128266;</button></div><div class="epy">'+sc.intro.py+'</div><div class="muted">'+sc.intro.en+'</div></div>'
      +dia
-     +(words?('<div class="lbl" style="margin-top:12px">Words you just learned</div><div class="scene-words">'+words+'</div>'):'')
+     +(words?('<div class="lbl" style="margin-top:14px">The words, in pictures</div><div class="scene-cards">'+words+'</div>'):'')
      +'<button class="btn primary" style="width:100%;margin-top:16px;font-size:16px;padding:13px" onclick="sceneContinue()">Continue &#8594;</button>'
      +'</div>';
    try{window.scrollTo({top:0,behavior:"smooth"});}catch(e){}
@@ -2486,7 +2491,7 @@ window.GRAMMARNEW=[{"t": "Basic word order: Subject + Verb + Object", "d": "A si
  function practiceQuestion(){ var P=LRN._pr; if(P.i>=P.items.length)return lessonAdvance(); var q=P.items[P.i]; var opts=(typeof prOpts==="function")?prOpts(q,VOCAB):[q]; var listen=(P.i%2===1);
    var prompt,optHTML;
    if(listen){ prompt='<div class="muted" style="margin-bottom:8px">Listen &mdash; which word is it?</div><button class="btn teal" onclick="speak(\''+q.h+'\')">&#9654; Play again</button>'; optHTML=opts.map(function(o){return '<button class="q-opt" data-c="'+(o.h===q.h?1:0)+'" onclick="practiceAns(this)"><span class="han">'+o.h+'</span></button>';}).join(''); }
-   else { var pic=(IMG[q.h]||EMOJI[q.h])?picHTML(q.h,110):""; prompt=(pic?'<div style="margin-bottom:6px">'+pic+'</div>':'')+'<div class="big han" style="font-size:46px">'+q.h+'</div><div class="py">'+q.p+' <button class="spk" onclick="speak(\''+q.h+'\')">&#128266;</button></div><div class="muted" style="margin-top:6px">What does it mean?</div>'; optHTML=opts.map(function(o){return '<button class="q-opt" data-c="'+(o.e===q.e?1:0)+'" onclick="practiceAns(this)">'+o.e+'</button>';}).join(''); }
+   else { var pic=""; prompt=(pic?'<div style="margin-bottom:6px">'+pic+'</div>':'')+'<div class="big han" style="font-size:46px">'+q.h+'</div><div class="py">'+q.p+' <button class="spk" onclick="speak(\''+q.h+'\')">&#128266;</button></div><div class="muted" style="margin-top:6px">What does it mean?</div>'; optHTML=opts.map(function(o){return '<button class="q-opt" data-c="'+(o.e===q.e?1:0)+'" onclick="practiceAns(this)">'+o.e+'</button>';}).join(''); }
    learnEl().innerHTML=phaseHeader()+'<div style="max-width:520px;margin:0 auto">'+phaseBar()+'<div class="row" style="justify-content:space-between;margin:2px 0 6px"><span class="pill">'+(P.i+1)+' / '+P.items.length+'</span><span class="pill teal">Score '+P.score+'</span></div><div class="card pad" style="text-align:center">'+prompt+'<div id="pr-opts" style="margin-top:12px">'+optHTML+'</div></div><div id="pr-next" style="text-align:right;margin-top:12px;display:none"><button class="btn primary" onclick="practiceNext()">'+(P.i>=P.items.length-1?"Continue":"Next")+'</button></div></div>';
    if(listen){try{speak(q.h);}catch(e){}} }
  window.practiceAns=function(btn){ var P=LRN._pr; var opts=document.querySelectorAll("#pr-opts .q-opt"); opts.forEach(function(b){b.disabled=true;}); if(btn.getAttribute("data-c")==="1"){btn.classList.add("correct");P.score++;} else {btn.classList.add("wrong"); opts.forEach(function(b){if(b.getAttribute("data-c")==="1")b.classList.add("correct");});} document.getElementById("pr-next").style.display="block"; };
